@@ -1,21 +1,26 @@
 from fastapi import FastAPI
 
+from app.database.db import engine, Base
+from app.routers import expense
+
+
+Base.metadata.create_all(bind=engine)
+
+
 app = FastAPI(
-    title="AI Productivity Hub API",
-    description="MCP powered productivity platform",
-    version="1.0.0"
+    title="AI Productivity Hub",
+    version="1.0"
+)
+
+
+app.include_router(
+    expense.router
 )
 
 
 @app.get("/")
 def home():
+
     return {
         "message": "AI Productivity Hub Backend Running 🚀"
-    }
-
-
-@app.get("/health")
-def health_check():
-    return {
-        "status": "healthy"
     }
