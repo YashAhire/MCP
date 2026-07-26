@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, DateTime
 from datetime import datetime
 
 from app.database.db import Base
-
+from sqlalchemy.orm import relationship
 
 class User(Base):
 
@@ -39,4 +39,10 @@ class User(Base):
     created_at = Column(
         DateTime,
         default=datetime.utcnow
+    )
+
+    expenses = relationship(
+        "Expense",
+        back_populates="user",
+        cascade="all, delete-orphan"
     )

@@ -3,12 +3,16 @@ from app.database.models.expense import Expense
 from app.schemas.expense import ExpenseCreate
 
 
-def create_expense(db: Session, expense: ExpenseCreate):
-
+def create_expense(
+    db: Session,
+    expense: ExpenseCreate,
+    user_id: int
+):
     new_expense = Expense(
         title=expense.title,
         amount=expense.amount,
         category=expense.category,
+        user_id=user_id,
     )
 
     db.add(new_expense)
@@ -18,6 +22,7 @@ def create_expense(db: Session, expense: ExpenseCreate):
     return new_expense
 
 
-def get_all_expenses(db: Session):
-
-    return db.query(Expense).all()
+def get_all_expenses(db: Session, user_id: int):
+    return db.query(Expense).filter(
+        Expense.user_id == user_id
+    ).all()

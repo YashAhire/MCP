@@ -17,6 +17,10 @@ from app.services.auth_service import (
 
 from app.auth.jwt_handler import create_access_token
 
+from app.auth.dependencies import get_current_user
+from app.database.models.user import User
+from fastapi.security import OAuth2PasswordRequestForm
+
 router = APIRouter(
     prefix="/auth",
     tags=["Authentication"]
@@ -49,14 +53,14 @@ def register(
 
 @router.post("/login")
 def login(
-    user: UserLogin,
+    form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
 ):
 
     authenticated_user = authenticate_user(
         db,
-        user.email,
-        user.password
+        form_data.username,
+        form_data.password
     )
 
     if not authenticated_user:
@@ -75,3 +79,10 @@ def login(
         "access_token": token,
         "token_type": "bearer"
     }
+
+@router.get("/me", response_model=UserResponse)
+def get_profile(
+    current_user: User = Depends(get_current_user)
+):
+
+    return current_user

@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey
 from datetime import date
 
 from app.database.db import Base
-
+from sqlalchemy.orm import relationship
 
 class Expense(Base):
 
@@ -43,4 +43,9 @@ class Expense(Base):
     user_id = Column(
         Integer,
         ForeignKey("users.id")
+    )
+
+    user = relationship(
+        "User",
+        back_populates="expenses"
     )
