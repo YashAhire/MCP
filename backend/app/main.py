@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from app.database.db import engine, Base
-from app.routers import expense
+from app.routers import expense, auth
 from app.database.models import User, Expense
 
 
@@ -14,9 +14,9 @@ app = FastAPI(
 )
 
 
-app.include_router(
-    expense.router
-)
+app.include_router(expense.router)
+
+app.include_router(auth.router)
 
 
 @app.get("/")
