@@ -9,7 +9,7 @@ export interface RegisterData {
 
 
 export interface LoginData {
-    email: string;
+    username: string;
     password: string;
 }
 
@@ -31,10 +31,29 @@ export async function loginUser(
     data: LoginData
 ) {
 
+    const formData = new URLSearchParams();
+
+    formData.append(
+        "username",
+        data.username
+    );
+
+    formData.append(
+        "password",
+        data.password
+    );
+
+
     const response = await api.post(
         "/auth/login",
-        data
+        formData,
+        {
+            headers:{
+                "Content-Type":"application/x-www-form-urlencoded"
+            }
+        }
     );
+
 
     return response.data;
 }

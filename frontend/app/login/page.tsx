@@ -10,9 +10,9 @@ export default function LoginPage() {
 
     const router = useRouter();
 
-    const [form, setForm] = useState({
-        email: "",
-        password: ""
+    const [form,setForm] = useState({
+        username:"",
+        password:""
     });
 
 
@@ -22,20 +22,32 @@ export default function LoginPage() {
 
         e.preventDefault();
 
+        try {
 
-        const data = await loginUser(form);
-
-
-        saveToken(
-            data.access_token
-        );
+            const response = await loginUser(form);
 
 
-        router.push("/dashboard");
+            saveToken(
+                response.access_token
+            );
+
+
+            router.push("/dashboard");
+
+
+        } catch(error){
+
+            console.log(error);
+
+            alert("Login failed");
+
+        }
+
     }
 
 
     return (
+
         <div className="flex min-h-screen items-center justify-center">
 
             <form
@@ -51,10 +63,13 @@ export default function LoginPage() {
                 <input
                     className="border p-2 w-full"
                     placeholder="Email"
-                    onChange={(e)=>setForm({
-                        ...form,
-                        email:e.target.value
-                    })}
+                    type="email"
+                    onChange={(e)=>
+                        setForm({
+                            ...form,
+                            username:e.target.value
+                        })
+                    }
                 />
 
 
@@ -62,10 +77,12 @@ export default function LoginPage() {
                     className="border p-2 w-full"
                     placeholder="Password"
                     type="password"
-                    onChange={(e)=>setForm({
-                        ...form,
-                        password:e.target.value
-                    })}
+                    onChange={(e)=>
+                        setForm({
+                            ...form,
+                            password:e.target.value
+                        })
+                    }
                 />
 
 
@@ -75,8 +92,10 @@ export default function LoginPage() {
                     Login
                 </button>
 
+
             </form>
 
         </div>
+
     );
 }
