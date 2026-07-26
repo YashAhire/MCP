@@ -2,42 +2,28 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.database.db import get_db
-from app.database.models import Expense
-
+from app.schemas.expense import ExpenseCreate, ExpenseResponse
+from app.services.expense_service import (
+    create_expense,
+    get_all_expenses,
+)
 
 router = APIRouter(
     prefix="/expenses",
-    tags=["Expenses"]
+    tags=["Expenses"],
 )
 
 
-@router.post("/")
+@router.post("/", response_model=ExpenseResponse)
 def add_expense(
-    title: str,
-    amount: float,
-    category: str,
-    db: Session = Depends(get_db)
+    expense: ExpenseCreate,
+    db: Session = Depends(get_db),
 ):
-
-    expense = Expense(
-        title=title,
-        amount=amount,
-        category=category
-    )
-
-    db.add(expense)
-    db.commit()
-    db.refresh(expense)
-
-    return expense
+    return create_expense(db, expense)
 
 
-
-@router.get("/")
-def get_expenses(
-    db: Session = Depends(get_db)
+@router.get("/", response_model=list[ExpenseResponse])
+def list_expenses(
+    db: Session = Depends(get_db),
 ):
-
-    expenses = db.query(Expense).all()
-
-    return expenses
+    return get_all_expenses(db)

@@ -2,6 +2,7 @@ from fastapi import FastAPI
 
 from app.database.db import engine, Base
 from app.routers import expense
+from app.database.models import User, Expense
 
 
 Base.metadata.create_all(bind=engine)
@@ -20,7 +21,6 @@ app.include_router(
 
 @app.get("/")
 def home():
-
     return {
         "message": "AI Productivity Hub Backend Running 🚀"
     }
